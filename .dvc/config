@@ -1,0 +1,5 @@
+[core]
+    hardlink_lock = true
+    remote = myremote
+['remote "myremote"']
+    url = s3://pakistani-politician-dvc
