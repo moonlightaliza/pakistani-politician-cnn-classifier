@@ -8,7 +8,7 @@ Run from project root:
     python3 src/models/resnet/train_resnet.py
 """
 
-import sys, os
+import sys, os, json
 sys.path.insert(0, os.path.abspath("."))
 
 import torch
@@ -24,6 +24,7 @@ from src.augmentation.augment import get_transforms
 TRAIN_DIR  = "dataset/train"
 VAL_DIR    = "dataset/val"
 SAVE_PATH  = "src/models/resnet/resnet50_politician.pth"
+LOG_PATH   = "src/models/resnet/training_log.json"   # ← NEW: for visualize.py
 
 PHASE_A_EPOCHS = 5     # head only
 PHASE_B_EPOCHS = 20    # full fine-tune
@@ -93,6 +94,17 @@ def main():
     criterion    = nn.CrossEntropyLoss()
     best_val_acc = 0.0
 
+    # ── Training history (saved after every epoch for visualize.py) ────────────
+    history = {"train_loss": [], "val_loss": [], "train_acc": [], "val_acc": []}
+
+    def _log(t_loss, t_acc, v_loss, v_acc):
+        history["train_loss"].append(round(t_loss, 6))
+        history["val_loss"].append(round(v_loss,   6))
+        history["train_acc"].append(round(t_acc,   4))
+        history["val_acc"].append(round(v_acc,     4))
+        with open(LOG_PATH, "w") as f:
+            json.dump(history, f, indent=2)
+
     # ── Phase A: Head only ─────────────────────────────────────────────────────
     print("=" * 55)
     print("PHASE A — Training head only (backbone frozen)")
@@ -104,6 +116,7 @@ def main():
         t_loss, t_acc = run_epoch(model, train_loader, criterion, optimizer, "train")
         v_loss, v_acc = run_epoch(model, val_loader,   criterion, None,      "val")
         scheduler.step()
+        _log(t_loss, t_acc, v_loss, v_acc)
         print(f"Epoch {epoch:02d}/{PHASE_A_EPOCHS} | Train Loss: {t_loss:.4f} Acc: {t_acc:.2f}% | Val Loss: {v_loss:.4f} Acc: {v_acc:.2f}%")
         if v_acc > best_val_acc:
             best_val_acc = v_acc
@@ -124,6 +137,7 @@ def main():
         t_loss, t_acc = run_epoch(model, train_loader, criterion, optimizer, "train")
         v_loss, v_acc = run_epoch(model, val_loader,   criterion, None,      "val")
         scheduler.step()
+        _log(t_loss, t_acc, v_loss, v_acc)
         print(f"Epoch {epoch:02d}/{PHASE_B_EPOCHS} | Train Loss: {t_loss:.4f} Acc: {t_acc:.2f}% | Val Loss: {v_loss:.4f} Acc: {v_acc:.2f}%")
         if v_acc > best_val_acc:
             best_val_acc = v_acc
@@ -131,7 +145,8 @@ def main():
             print(f"  ✓ Best model saved (val_acc={v_acc:.2f}%)")
 
     print(f"\nTraining complete. Best Val Accuracy: {best_val_acc:.2f}%")
-    print(f"Model saved → {SAVE_PATH}")
+    print(f"Model saved        → {SAVE_PATH}")
+    print(f"Training log saved → {LOG_PATH}")
 
 
 if __name__ == "__main__":
