@@ -1,0 +1,128 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# commands.txt — Pakistani Politician Classifier: Docker + Cloud Deployment
+# Run all commands from the PROJECT ROOT directory
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── STEP 0: Prerequisites ──────────────────────────────────────────────────────
+# Install Docker Desktop (https://www.docker.com/products/docker-desktop/)
+# Have your trained model at: src/models/resnet/resnet50_politician.pth
+
+# ── STEP 1: Export class names (run once after training) ───────────────────────
+python3 src/models/resnet/export_classes.py
+# Produces: src/models/resnet/classes.json
+
+
+# ── STEP 2: Build Docker image ─────────────────────────────────────────────────
+docker build -f docker/Dockerfile -t politician-classifier:latest .
+
+
+# ── STEP 3: Test locally ───────────────────────────────────────────────────────
+# Option A — docker run directly
+docker run -p 5000:5000 politician-classifier:latest
+
+# Option B — docker-compose (recommended; mounts model as volume)
+docker-compose -f docker/docker-compose.yml up
+
+# Test health endpoint
+curl http://localhost:5000/health
+
+# Test predict endpoint (replace test.jpg with your image)
+curl -X POST http://localhost:5000/predict \
+     -F "image=@test.jpg" \
+     -F "top_n=3"
+
+
+# ── STEP 4: Push to Docker Hub ─────────────────────────────────────────────────
+# Replace YOUR_DOCKERHUB_USERNAME with your actual username
+docker login
+docker tag politician-classifier:latest YOUR_DOCKERHUB_USERNAME/politician-classifier:latest
+docker push YOUR_DOCKERHUB_USERNAME/politician-classifier:latest
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CLOUD DEPLOYMENT OPTIONS
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── AWS (Elastic Container Service — Fargate) ──────────────────────────────────
+# 1. Push image to AWS ECR (Elastic Container Registry)
+aws ecr get-login-password --region us-east-1 | \
+    docker login --username AWS --password-stdin \
+    YOUR_AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+
+aws ecr create-repository --repository-name politician-classifier --region us-east-1
+
+docker tag politician-classifier:latest \
+    YOUR_AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/politician-classifier:latest
+
+docker push \
+    YOUR_AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/politician-classifier:latest
+
+# 2. Create ECS Cluster + Task Definition + Service (via AWS Console or CLI)
+#    - Task memory: 2048 MB | CPU: 1 vCPU (minimum for PyTorch CPU inference)
+#    - Container port: 5000
+#    - Assign a public IP or attach an Application Load Balancer
+
+
+# ── GCP (Cloud Run — serverless, easiest for ML APIs) ─────────────────────────
+# 1. Push to Google Artifact Registry
+gcloud auth configure-docker us-central1-docker.pkg.dev
+
+docker tag politician-classifier:latest \
+    us-central1-docker.pkg.dev/YOUR_PROJECT_ID/politician-classifier/api:latest
+
+docker push \
+    us-central1-docker.pkg.dev/YOUR_PROJECT_ID/politician-classifier/api:latest
+
+# 2. Deploy to Cloud Run
+gcloud run deploy politician-api \
+    --image us-central1-docker.pkg.dev/YOUR_PROJECT_ID/politician-classifier/api:latest \
+    --platform managed \
+    --region us-central1 \
+    --port 5000 \
+    --memory 2Gi \
+    --cpu 2 \
+    --timeout 120 \
+    --allow-unauthenticated
+# Cloud Run gives you a HTTPS URL automatically — no load balancer setup needed
+
+
+# ── Azure (Container Apps) ─────────────────────────────────────────────────────
+# 1. Push to Azure Container Registry
+az acr login --name YOUR_ACR_NAME
+
+docker tag politician-classifier:latest \
+    YOUR_ACR_NAME.azurecr.io/politician-classifier:latest
+
+docker push YOUR_ACR_NAME.azurecr.io/politician-classifier:latest
+
+# 2. Deploy as Azure Container App
+az containerapp create \
+    --name politician-api \
+    --resource-group YOUR_RESOURCE_GROUP \
+    --image YOUR_ACR_NAME.azurecr.io/politician-classifier:latest \
+    --target-port 5000 \
+    --ingress external \
+    --cpu 1.0 \
+    --memory 2.0Gi \
+    --min-replicas 1 \
+    --max-replicas 5
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SAMPLE API USAGE (Python client)
+# ══════════════════════════════════════════════════════════════════════════════
+# import requests
+# url = "https://YOUR_CLOUD_URL/predict"
+# with open("image.jpg", "rb") as f:
+#     response = requests.post(url, files={"image": f}, data={"top_n": 3})
+# print(response.json())
+#
+# Expected response:
+# {
+#   "top_n": 3,
+#   "predictions": [
+#     {"rank": 1, "politician": "imran_khan",    "confidence": 87.43},
+#     {"rank": 2, "politician": "shehbaz_sharif","confidence": 6.21},
+#     {"rank": 3, "politician": "bilawal_bhutto", "confidence": 3.11}
+#   ]
+# }
