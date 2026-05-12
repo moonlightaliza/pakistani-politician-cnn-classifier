@@ -17,6 +17,11 @@ import torch.optim as optim
 from torchvision import datasets, models
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+
+# MLflow tracking (keep this)
+import mlflow
+from mlops.mlflow.config import *
+
 from src.augmentation.augment import get_transforms
 
 # ── Config ─────────────────────────────────────────────────────────────────────
