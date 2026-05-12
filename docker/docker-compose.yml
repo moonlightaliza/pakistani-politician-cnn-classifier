@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  politician-api:
+    build:
+      context: ..                     # project root (so COPY has access to src/)
+      dockerfile: docker/Dockerfile
+    image: politician-classifier:latest
+    container_name: politician-api
+    ports:
+      - "5000:5000"
+    environment:
+      - MODEL_PATH=src/models/resnet/resnet50_politician.pth
+      - CLASSES_PATH=src/models/resnet/classes.json
+      - TOP_N=5
+      - PORT=5000
+    # Mount model weights as a volume so you don't rebuild on every weight update
+    volumes:
+      - ./src/models/resnet:/app/src/models/resnet:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
