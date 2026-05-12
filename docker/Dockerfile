@@ -30,10 +30,10 @@ COPY src/models/resnet/classes.json             src/models/resnet/classes.json
 ENV MODEL_PATH=src/models/resnet/resnet50_politician.pth \
     CLASSES_PATH=src/models/resnet/classes.json \
     TOP_N=5 \
-    PORT=5000
+    PORT=8000
 
 # ── Expose port ────────────────────────────────────────────────────────────────
-EXPOSE 5000
+EXPOSE 8000
 
 # ── Run with Gunicorn (production WSGI server) ─────────────────────────────────
 # 2 workers × 2 threads = 4 concurrent requests; tune to your instance size
