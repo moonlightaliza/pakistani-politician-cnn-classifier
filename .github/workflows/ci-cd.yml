@@ -79,5 +79,5 @@ jobs:
             docker rm politician-cnn-api || true
             docker run -d \
               --name politician-cnn-api \
-              -p 8001:8000 \
+              -p 8000:8000 \
               alizazia/politician-cnn-api:latest
