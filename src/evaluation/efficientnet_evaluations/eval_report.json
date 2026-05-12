@@ -1,15 +1,16 @@
 {
-  "overall_accuracy_pct": 91.7695,
-  "top_3_accuracy_pct": 96.2963,
+  "model": "EfficientNet-B3",
+  "overall_accuracy_pct": 92.1811,
+  "top_3_accuracy_pct": 96.7078,
   "macro_avg": {
-    "precision": 0.927,
-    "recall": 0.9211,
-    "f1-score": 0.922
+    "precision": 0.9274,
+    "recall": 0.9234,
+    "f1-score": 0.9238
   },
   "weighted_avg": {
-    "precision": 0.9211,
-    "recall": 0.9177,
-    "f1-score": 0.9175
+    "precision": 0.9243,
+    "recall": 0.9218,
+    "f1-score": 0.9213
   },
   "per_class": {
     "ahmed_sharif_chaudhry": {
@@ -19,51 +20,51 @@
       "support": 14
     },
     "altaf_hussain": {
-      "precision": 0.9375,
-      "recall": 1.0,
-      "f1-score": 0.9677,
+      "precision": 0.9333,
+      "recall": 0.9333,
+      "f1-score": 0.9333,
       "support": 15
     },
     "asfandyar_wali": {
-      "precision": 0.875,
-      "recall": 0.8235,
-      "f1-score": 0.8485,
+      "precision": 1.0,
+      "recall": 0.8824,
+      "f1-score": 0.9375,
       "support": 17
     },
     "asif_ali_zardari": {
-      "precision": 1.0,
+      "precision": 0.8333,
       "recall": 0.7692,
-      "f1-score": 0.8696,
+      "f1-score": 0.8,
       "support": 13
     },
     "bilawal_bhutto": {
-      "precision": 0.9091,
-      "recall": 0.8333,
-      "f1-score": 0.8696,
+      "precision": 1.0,
+      "recall": 0.9167,
+      "f1-score": 0.9565,
       "support": 12
     },
     "chaudhry_nisar": {
-      "precision": 0.8824,
-      "recall": 0.8824,
-      "f1-score": 0.8824,
+      "precision": 1.0,
+      "recall": 0.8235,
+      "f1-score": 0.9032,
       "support": 17
     },
     "fazlur_rehman": {
-      "precision": 0.8571,
-      "recall": 0.9,
-      "f1-score": 0.878,
+      "precision": 0.9048,
+      "recall": 0.95,
+      "f1-score": 0.9268,
       "support": 20
     },
     "imran_khan": {
       "precision": 1.0,
-      "recall": 0.875,
-      "f1-score": 0.9333,
+      "recall": 1.0,
+      "f1-score": 1.0,
       "support": 16
     },
     "maryam_nawaz": {
-      "precision": 0.9091,
-      "recall": 0.9091,
-      "f1-score": 0.9091,
+      "precision": 0.84,
+      "recall": 0.9545,
+      "f1-score": 0.8936,
       "support": 22
     },
     "nawaz_sharif": {
@@ -73,9 +74,9 @@
       "support": 12
     },
     "pervez_khattak": {
-      "precision": 1.0,
+      "precision": 0.9231,
       "recall": 1.0,
-      "f1-score": 1.0,
+      "f1-score": 0.96,
       "support": 12
     },
     "pervez_musharraf": {
@@ -85,21 +86,21 @@
       "support": 18
     },
     "rana_sanaullah": {
-      "precision": 1.0,
+      "precision": 0.9286,
       "recall": 1.0,
-      "f1-score": 1.0,
+      "f1-score": 0.963,
       "support": 13
     },
     "shah_mehmood_qureshi": {
-      "precision": 0.7778,
-      "recall": 0.9333,
-      "f1-score": 0.8485,
+      "precision": 0.8571,
+      "recall": 0.8,
+      "f1-score": 0.8276,
       "support": 15
     },
     "shehbaz_sharif": {
-      "precision": 0.8667,
-      "recall": 0.8667,
-      "f1-score": 0.8667,
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1-score": 0.8,
       "support": 15
     },
     "sirajul_haq": {
@@ -130,9 +131,9 @@
     ],
     [
       0,
-      15,
+      14,
       0,
-      0,
+      1,
       0,
       0,
       0,
@@ -149,7 +150,7 @@
     [
       0,
       0,
-      14,
+      15,
       0,
       0,
       0,
@@ -158,7 +159,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0,
       0,
@@ -167,7 +168,7 @@
     [
       0,
       1,
-      1,
+      0,
       10,
       0,
       0,
@@ -175,6 +176,24 @@
       0,
       0,
       1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      11,
+      0,
+      0,
+      0,
+      1,
+      0,
       0,
       0,
       0,
@@ -187,62 +206,6 @@
       0,
       0,
       0,
-      10,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      1,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      1,
-      15,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      18,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      2,
       0,
       14,
       0,
@@ -250,6 +213,26 @@
       0,
       0,
       0,
+      2,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      19,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
       0,
       0,
       0
@@ -261,9 +244,27 @@
       0,
       0,
       0,
-      1,
       0,
-      20,
+      16,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      21,
       0,
       0,
       0,
@@ -347,6 +348,25 @@
     [
       0,
       0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      12,
+      2,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
       1,
       0,
       0,
@@ -356,28 +376,9 @@
       0,
       0,
       0,
-      0,
-      0,
-      14,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      2,
-      13,
+      1,
+      1,
+      12,
       0
     ],
     [
