@@ -3,8 +3,7 @@ evaluate.py — EfficientNet-B3 Evaluation Script
 Computes: accuracy, per-class precision/recall/F1, confusion matrix,
           top-k accuracy, and saves a full JSON report + PNG confusion matrix.
 
-Run from project root:
-    python3 src/models/efficientnet/evaluate.py
+
 """
 
 import sys, os, json
