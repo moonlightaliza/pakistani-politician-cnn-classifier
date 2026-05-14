@@ -31,16 +31,16 @@ from torch.utils.data import DataLoader
 # CONFIG
 # ══════════════════════════════════════════════════════════════════════════════
 
-BASE_DIR   = "/content/drive/MyDrive/pakistani-politician-cnn-classifier"
+BASE_DIR   = os.path.abspath(".")
 
-TRAIN_DIR  = os.path.join(BASE_DIR, "train")
-VAL_DIR    = os.path.join(BASE_DIR, "val")
+TRAIN_DIR  = os.path.join(BASE_DIR, "dataset/train")
+VAL_DIR    = os.path.join(BASE_DIR, "dataset/val")
 
-SAVE_PATH  = os.path.join(BASE_DIR, "efficientnet_b3_best.pth")
+SAVE_PATH  = "src/models/efficientnet/efficientnet_politician.pth"
 LOG_PATH   = os.path.join(BASE_DIR, "training_log.json")
 
 # MLflow
-MLFLOW_DIR = os.path.join(BASE_DIR, "mlruns")
+MLFLOW_TRACKING_URI = "http://127.0.0.1:5000"
 
 EXPERIMENT_NAME = "EfficientNet-B3-Politician-Classifier"
 
@@ -52,7 +52,7 @@ BATCH_SIZE     = 32
 LR_HEAD        = 0.001
 LR_FINETUNE    = 0.00005
 
-NUM_WORKERS    = 2
+NUM_WORKERS    = 0
 SEED           = 42
 
 IMG_SIZE       = 300
@@ -64,7 +64,7 @@ torch.manual_seed(SEED)
 # DEVICE
 # ══════════════════════════════════════════════════════════════════════════════
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("mps") if torch.backends.mps.is_available() else torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 print(f"\nUsing device: {device}\n")
 
@@ -270,7 +270,7 @@ def main():
     # MLFLOW SETUP
     # ══════════════════════════════════════════════════════════════════════════
 
-    mlflow.set_tracking_uri(f"file:{MLFLOW_DIR}")
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
     mlflow.set_experiment(EXPERIMENT_NAME)
 
