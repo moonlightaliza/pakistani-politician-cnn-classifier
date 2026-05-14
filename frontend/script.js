@@ -1,5 +1,5 @@
 // ── Config ─────────────────────────────────────────────────────────────────
-const API_BASE = 'http://127.0.0.1:8000'; // Change to your server URL
+const API_BASE = ''; // Change to your server URL
 
 // ── State ──────────────────────────────────────────────────────────────────
 let selectedFile = null;
