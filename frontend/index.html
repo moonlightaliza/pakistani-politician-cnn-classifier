@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PakPolitico — AI Classifier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <a class="logo" href="#">
+      <div class="logo-emblem">☾</div>
+      <span class="logo-text">Pak<span>Politico</span></span>
+    </a>
+    <span class="header-badge">AI · CNN Classifier</span>
+  </header>
+
+  <!-- Main -->
+  <main>
+
+    <!-- Hero -->
+    <div class="hero">
+      <span class="hero-eyebrow">Pakistani Politician Recognizer</span>
+      <h1>Identify <em>Leaders</em><br>with Deep Learning</h1>
+      <p>Upload a photo of a Pakistani politician. Our dual-model AI will identify who it is — powered by EfficientNet-B3 and ResNet-50.</p>
+    </div>
+
+    <!-- Card -->
+    <div class="card">
+
+      <div class="card-header">
+        <div class="card-header-dot"></div>
+        <h2>Upload &amp; Classify</h2>
+      </div>
+
+      <div class="card-body">
+
+        <!-- Model toggle -->
+        <div class="model-toggle" role="group" aria-label="Model selection">
+          <button class="model-btn active" data-model="resnet50" type="button">
+            ResNet-50 <span class="model-badge">224px</span>
+          </button>
+          <button class="model-btn" data-model="efficientnet_b3" type="button">
+            EfficientNet-B3 <span class="model-badge">300px</span>
+          </button>
+        </div>
+
+        <!-- Drop zone -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/*" />
+          <div class="drop-icon">🖼️</div>
+          <p class="drop-text">Drop image here or <strong>click to browse</strong></p>
+          <p class="drop-sub">JPG, PNG, WEBP — max 10 MB</p>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview-wrap" id="previewWrap">
+          <img id="previewImg" src="" alt="Preview" />
+          <button class="preview-clear" id="clearBtn" title="Remove image">✕</button>
+        </div>
+
+        <!-- Options -->
+        <div class="options-row">
+          <label class="top-n-label" for="topNSelect">Show top</label>
+          <select class="top-n-select" id="topNSelect">
+            <option value="3">3 results</option>
+            <option value="5" selected>5 results</option>
+            <option value="10">10 results</option>
+          </select>
+          <button class="submit-btn" id="submitBtn" disabled>
+            <div class="spinner"></div>
+            <span class="btn-label">🔍 Identify</span>
+          </button>
+        </div>
+
+        <!-- Error -->
+        <div class="error-box" id="errorBox">
+          <span>⚠️</span>
+          <span id="errorMsg"></span>
+        </div>
+
+        <!-- Results -->
+        <div class="results-section" id="resultsSection">
+          <div class="results-header">
+            <span class="results-title">Results</span>
+            <span class="results-model-tag" id="resultsModelTag"></span>
+          </div>
+          <ul class="result-list" id="resultList"></ul>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    Powered by <strong>EfficientNet-B3</strong> &amp; <strong>ResNet-50</strong> · Pakistani Politician CNN Classifier
+  </footer>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
+```
