@@ -19,22 +19,20 @@ from fastapi.staticfiles import StaticFiles
 from typing import Optional
 import uvicorn
 
-# ── Config ─────────────────────────────────────────────────────────────────────
-RESNET_MODEL_PATH      = os.environ.get("RESNET_MODEL_PATH",      "src/models/resnet/resnet50_politician.pth")
-EFFICIENTNET_MODEL_PATH= os.environ.get("EFFICIENTNET_MODEL_PATH","src/models/efficientnet/efficientnet_politician.pth")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-RESNET_CLASSES_PATH    = os.environ.get("RESNET_CLASSES_PATH",    "src/models/resnet/classes.json")
-EFFICIENTNET_CLASSES_PATH = os.environ.get("EFFICIENTNET_CLASSES_PATH", "src/models/efficientnet/classes.json")
+RESNET_MODEL_PATH       = os.environ.get("RESNET_MODEL_PATH",       os.path.join(BASE_DIR, "src/models/resnet/resnet50_politician.pth"))
+EFFICIENTNET_MODEL_PATH = os.environ.get("EFFICIENTNET_MODEL_PATH", os.path.join(BASE_DIR, "src/models/efficientnet/efficientnet_politician.pth"))
+RESNET_CLASSES_PATH     = os.environ.get("RESNET_CLASSES_PATH",     os.path.join(BASE_DIR, "src/models/resnet/classes.json"))
+EFFICIENTNET_CLASSES_PATH = os.environ.get("EFFICIENTNET_CLASSES_PATH", os.path.join(BASE_DIR, "src/models/efficientnet/classes.json"))
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 
 TOP_N = int(os.environ.get("TOP_N", 5))
-
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
 
-# ── Device ─────────────────────────────────────────────────────────────────────
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# ── Transforms ─────────────────────────────────────────────────────────────────
 def get_transform(img_size: int):
     return transforms.Compose([
         transforms.Resize((img_size, img_size)),
@@ -42,25 +40,15 @@ def get_transform(img_size: int):
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
     ])
 
-resnet_transform      = get_transform(224)
-efficientnet_transform= get_transform(300)
+resnet_transform       = get_transform(224)
+efficientnet_transform = get_transform(300)
 
-# ── Class loader ───────────────────────────────────────────────────────────────
-def load_classes(path: str, fallback_train_dir: str = "dataset/train") -> list:
+def load_classes(path: str) -> list:
     if os.path.exists(path):
         with open(path) as f:
             return json.load(f)
-    # Fallback: scan train folder
-    classes = sorted([
-        d for d in os.listdir(fallback_train_dir)
-        if os.path.isdir(os.path.join(fallback_train_dir, d))
-    ])
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w") as f:
-        json.dump(classes, f, indent=2)
-    return classes
+    raise FileNotFoundError(f"Classes file not found: {path}")
 
-# ── Model loaders ──────────────────────────────────────────────────────────────
 def load_resnet(num_classes: int) -> nn.Module:
     model = models.resnet50(weights=None)
     model.fc = nn.Sequential(
@@ -75,7 +63,6 @@ def load_resnet(num_classes: int) -> nn.Module:
     model.eval()
     return model
 
-
 def load_efficientnet(num_classes: int) -> nn.Module:
     model = models.efficientnet_b3(weights=None)
     in_features = model.classifier[1].in_features
@@ -89,18 +76,11 @@ def load_efficientnet(num_classes: int) -> nn.Module:
     model.eval()
     return model
 
-# ── App init ───────────────────────────────────────────────────────────────────
 app = FastAPI(
     title="Pakistani Politician Classifier",
     description="CNN classifier using EfficientNet-B3 and ResNet-50",
     version="2.0.0",
 )
-
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
-
-@app.get("/")
-def root():
-    return FileResponse("frontend/index.html")
 
 app.add_middleware(
     CORSMiddleware,
@@ -109,34 +89,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Load models at startup ─────────────────────────────────────────────────────
+if os.path.exists(FRONTEND_DIR):
+    app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+
+@app.get("/")
+def root():
+    index = os.path.join(FRONTEND_DIR, "index.html")
+    if os.path.exists(index):
+        return FileResponse(index)
+    return {"status": "API is running"}
+
 print("[INFO] Loading class names...")
 RESNET_CLASSES       = load_classes(RESNET_CLASSES_PATH)
 EFFICIENTNET_CLASSES = load_classes(EFFICIENTNET_CLASSES_PATH)
-
-print(f"[INFO] ResNet classes     : {len(RESNET_CLASSES)}")
+print(f"[INFO] ResNet classes: {len(RESNET_CLASSES)}")
 print(f"[INFO] EfficientNet classes: {len(EFFICIENTNET_CLASSES)}")
 
-print(f"[INFO] Loading ResNet-50 from {RESNET_MODEL_PATH}...")
+print(f"[INFO] Loading ResNet-50...")
 resnet_model = load_resnet(len(RESNET_CLASSES))
 print("[INFO] ResNet-50 ready.")
 
-print(f"[INFO] Loading EfficientNet-B3 from {EFFICIENTNET_MODEL_PATH}...")
+print(f"[INFO] Loading EfficientNet-B3...")
 efficientnet_model = load_efficientnet(len(EFFICIENTNET_CLASSES))
 print(f"[INFO] EfficientNet-B3 ready on {device}.")
 
-# ── Routes ─────────────────────────────────────────────────────────────────────
 @app.get("/health")
 def health():
     return {
         "status": "ok",
         "device": str(device),
         "models": {
-            "resnet50":       {"classes": len(RESNET_CLASSES),       "img_size": 224},
-            "efficientnet_b3":{"classes": len(EFFICIENTNET_CLASSES), "img_size": 300},
+            "resnet50":        {"classes": len(RESNET_CLASSES),       "img_size": 224},
+            "efficientnet_b3": {"classes": len(EFFICIENTNET_CLASSES), "img_size": 300},
         },
     }
-
 
 @app.post("/predict")
 async def predict(
@@ -144,7 +130,6 @@ async def predict(
     model: Optional[str] = Form("resnet50"),
     top_n: Optional[int] = Form(5),
 ):
-    # ── Validate model choice ──────────────────────────────────────────────────
     model = (model or "resnet50").lower().strip()
     if model not in ("resnet50", "efficientnet_b3", "efficientnet"):
         raise HTTPException(status_code=400, detail="model must be 'resnet50' or 'efficientnet_b3'")
@@ -155,16 +140,13 @@ async def predict(
     transform        = efficientnet_transform if use_efficientnet else resnet_transform
     model_label      = "EfficientNet-B3" if use_efficientnet else "ResNet-50"
 
-    # ── Read image ─────────────────────────────────────────────────────────────
     try:
         contents = await image.read()
         img = Image.open(io.BytesIO(contents)).convert("RGB")
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Could not read image: {str(e)}")
 
-    # ── Inference ──────────────────────────────────────────────────────────────
     tensor = transform(img).unsqueeze(0).to(device)
-
     with torch.no_grad():
         logits = selected_model(tensor)
         probs  = torch.softmax(logits, dim=1)[0]
@@ -181,14 +163,8 @@ async def predict(
         for rank, (prob, idx) in enumerate(zip(top_probs, top_idxs))
     ]
 
-    return JSONResponse({
-        "model":       model_label,
-        "top_n":       k,
-        "predictions": predictions,
-    })
+    return JSONResponse({"model": model_label, "top_n": k, "predictions": predictions})
 
-
-# ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
