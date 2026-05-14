@@ -471,7 +471,6 @@ def main():
         print(f"Best Validation Accuracy : {best_val_acc:.2f}%")
         print(f"Model Saved              : {SAVE_PATH}")
         print(f"Training Log Saved       : {LOG_PATH}")
-        print(f"MLflow Tracking Saved    : {MLFLOW_DIR}")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
