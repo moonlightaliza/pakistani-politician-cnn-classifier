@@ -1,5 +1,5 @@
 // ── Config ─────────────────────────────────────────────────────────────────
-const API_BASE = ''; // Change to your server URL
+const API_BASE = 'https://kaythecoder-101-politician-classifier-api.hf.space';
 
 // ── State ──────────────────────────────────────────────────────────────────
 let selectedFile = null;
