@@ -37,4 +37,4 @@ EXPOSE 8000
 
 # ── Run with Gunicorn (production WSGI server) ─────────────────────────────────
 # 2 workers × 2 threads = 4 concurrent requests; tune to your instance size
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "--timeout", "120", "app:app"]
+CMD ["uvicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "--timeout", "120", "app:app"]
