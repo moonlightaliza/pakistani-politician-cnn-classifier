@@ -1,40 +1,25 @@
-# ── Stage 1: Base image ────────────────────────────────────────────────────────
-# Using slim Python image (CPU-only inference; swap to nvidia/cuda image for GPU)
 FROM python:3.11-slim
 
-# ── System deps ────────────────────────────────────────────────────────────────
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    libgl1 \
+    libglib2.0-0 libsm6 libxext6 libxrender-dev libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
-# ── Working directory ──────────────────────────────────────────────────────────
 WORKDIR /app
 
-# ── Install Python dependencies ────────────────────────────────────────────────
 COPY api/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ── Copy application code ──────────────────────────────────────────────────────
 COPY api/app.py .
 
-# ── Copy model weights + class list ───────────────────────────────────────────
-# These paths mirror your local project structure
-COPY src/models/resnet/resnet50_politician.pth  src/models/resnet/resnet50_politician.pth
-COPY src/models/resnet/classes.json             src/models/resnet/classes.json
+COPY src/models/resnet/resnet50_politician.pth      /app/src/models/resnet/resnet50_politician.pth
+COPY src/models/resnet/classes.json                 /app/src/models/resnet/classes.json
+COPY src/models/efficientnet/efficientnet_politician.pth /app/src/models/efficientnet/efficientnet_politician.pth
+COPY src/models/efficientnet/classes.json           /app/src/models/efficientnet/classes.json
 
-# ── Environment variables (overridable at runtime) ─────────────────────────────
-ENV MODEL_PATH=src/models/resnet/resnet50_politician.pth \
-    CLASSES_PATH=src/models/resnet/classes.json \
-    TOP_N=5 \
-    PORT=8000
+COPY frontend/ /app/frontend/
 
-# ── Expose port ────────────────────────────────────────────────────────────────
+ENV TOP_N=5 PORT=8000
+
 EXPOSE 8000
 
-# ── Run with Gunicorn (production WSGI server) ─────────────────────────────────
-# 2 workers × 2 threads = 4 concurrent requests; tune to your instance size
-CMD ["uvicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "--timeout", "120", "app:app"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
