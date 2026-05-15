@@ -260,24 +260,45 @@ venv\Scripts\activate           # Windows
 
 ### 3. Install Dependencies
 
+There are two separate `requirements.txt` files depending on what you are running.
+
+**Root `requirements.txt`** — training, evaluation, and data pipeline:
+
+```
+fastapi
+uvicorn
+numpy
+Pillow
+scikit-learn
+pandas
+```
+
+Install with:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-`requirements.txt` includes:
+**`api/requirements.txt`** — API server only (CPU-only PyTorch for lightweight deployment):
 
 ```
-torch>=2.0.0
-torchvision>=0.15.0
-scikit-learn>=1.3.0
-matplotlib>=3.7.0
-numpy>=1.24.0
-Pillow>=10.0.0
-mlflow>=2.10.0
-dvc>=3.0.0
-fastapi>=0.110.0
-uvicorn>=0.27.0
+--extra-index-url https://download.pytorch.org/whl/cpu
+fastapi
+uvicorn
+torch==2.2.0+cpu
+torchvision==0.17.0+cpu
+Pillow
+python-multipart
+huggingface_hub
 ```
+
+Install with:
+
+```bash
+pip install -r api/requirements.txt
+```
+
+> The API uses a CPU-only PyTorch build (`torch==2.2.0+cpu`) to keep the Docker image lean for deployment. For local training with a GPU, install the standard `torch` separately.
 
 ### 4. Pull the Dataset with DVC
 
