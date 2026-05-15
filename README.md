@@ -31,7 +31,6 @@ A multi-class facial image classification system that identifies **16 Pakistani 
 - [MLOps Pipeline](#-mlops-pipeline)
 - [Docker & Deployment](#-docker--deployment)
 - [CI/CD](#-cicd)
-- [Report](#-report)
 - [Team](#-team)
 
 ---
@@ -69,22 +68,22 @@ The frontend (`frontend/index.html`, `script.js`, `style.css`) sends the image t
 
 | # | Class | Label |
 |---|---|---|
-| 1 | Imran Khan | `imran_khan` |
-| 2 | Nawaz Sharif | `nawaz_sharif` |
-| 3 | Shehbaz Sharif | `shehbaz_sharif` |
-| 4 | Bilawal Bhutto | `bilawal_bhutto` |
-| 5 | Maryam Nawaz | `maryam_nawaz` |
-| 6 | Asif Zardari | `asif_zardari` |
-| 7 | Asad Umar | `asad_umar` |
-| 8 | Shah Mehmood Qureshi | `shah_mehmood_qureshi` |
-| 9 | Fawad Chaudhry | `fawad_chaudhry` |
-| 10 | Hamza Shahbaz | `hamza_shahbaz` |
-| 11 | Khawaja Asif | `khawaja_asif` |
-| 12 | Pervaiz Elahi | `pervaiz_elahi` |
-| 13 | Siraj ul Haq | `siraj_ul_haq` |
-| 14 | Fazl ur Rehman | `fazl_ur_rehman` |
-| 15 | Rana Sanaullah | `rana_sanaullah` |
-| 16 | ISPR Spokesperson | `ispr_spokesperson` |
+| 1 | Ahmed Sharif Chaudhry | `ahmed_sharif_chau...` |
+| 2 | Altaf Hussain | `altaf_hussain` |
+| 3 | Asfandyar Wali | `asfandyar_wali` |
+| 4 | Asif Ali Zardari | `asif_ali_zardari` |
+| 5 | Bilawal Bhutto | `bilawal_bhutto` |
+| 6 | Chaudhry Nisar | `chaudhry_nisar` |
+| 7 | Fazlur Rehman | `fazlur_rehman` |
+| 8 | Imran Khan | `imran_khan` |
+| 9 | Maryam Nawaz | `maryam_nawaz` |
+| 10 | Nawaz Sharif | `nawaz_sharif` |
+| 11 | Pervez Khattak | `pervez_khattak` |
+| 12 | Pervez Musharraf | `pervez_musharraf` |
+| 13 | Rana Sanaullah | `rana_sanaullah` |
+| 14 | Shah Mehmood Qureshi | `shah_mehmood_qu...` |
+| 15 | Shehbaz Sharif | `shehbaz_sharif` |
+| 16 | Sirajul Haq | `sirajul_haq` |
 
 ### Collection Sources
 
@@ -94,9 +93,9 @@ Images were collected manually from Google Images, Wikipedia, official news webs
 
 | Split | Ratio | Approx. Images |
 |---|---|---|
-| Train | 75% | ~1,860 |
+| Train | 70% | ~1,736 |
 | Validation | 15% | ~372 |
-| Test | 10% | ~248 |
+| Test | 15% | ~372 |
 
 ```
 dataset/
@@ -406,7 +405,7 @@ Running `evaluate.py` produces the following in `src/evaluation/outputs/`:
 
 ### Key Observations
 
-- **Family confusion** — most misclassifications occur between visually similar family members (Nawaz ↔ Shehbaz Sharif, Bilawal ↔ Asif Zardari). These cases have low confidence scores, indicating appropriate model uncertainty rather than overconfidence.
+- **Family confusion** — most misclassifications occur between visually similar figures such as Nawaz Sharif ↔ Shehbaz Sharif and Bilawal Bhutto ↔ Asif Ali Zardari. These cases have low confidence scores, indicating appropriate model uncertainty rather than overconfidence.
 - **EfficientNet-B2 outperforms ResNet-50** across all metrics with ~2.4% higher test accuracy, while also training faster due to its compound scaling design.
 - **Classes with fewer images** (< 100) show lower per-class F1, confirming the importance of balanced data collection.
 
@@ -483,30 +482,14 @@ GitHub Actions runs on every push and pull request to `main`:
 
 ---
 
-## 📄 Report
-
-The full IEEE-format project report is available on Overleaf and covers:
-
-- Introduction & motivation
-- Dataset collection methodology
-- CNN architectures & training strategy
-- Results comparison (ResNet-50 vs EfficientNet-B2)
-- Misclassification analysis
-- Challenges faced (family-member confusion, class imbalance, scraping quality)
-- Conclusion & future work
-- References
-
-> 🔗 [Overleaf Report Link](#) ← replace with your Overleaf share URL
-
----
-
 ## 👥 Team
 
-| Name | Role |
+| Name | GitHub |
 |---|---|
-| [Your Name] | Model training, MLOps pipeline |
-| [Teammate] | Data collection, augmentation |
-| [Teammate] | API, Docker, deployment |
+| Umm e Kulsoom | [@KayTheCoder-101](https://github.com/KayTheCoder-101) |
+| Aliza Zia | [@moonlightaliza](https://github.com/moonlightaliza) |
+| Areesha Saqib | [@Areesha-008](https://github.com/Areesha-008) |
+| Mobeen Rukhsar | [@mobeenrukhsar269-crypto](https://github.com/mobeenrukhsar269-crypto) |
 
 ---
 
@@ -517,7 +500,7 @@ This project is for academic purposes only. All images were collected from publi
 ---
 
 <div align="center">
-  Made for the Deep Learning course · FAST-NUCES
+  Made for the Artificial Neural Network + Machine Learning Operations Course · FAST-NUCES
   <br/>
   <a href="https://pakistani-politician-cnn-classifier.vercel.app/">🌐 Live Demo</a>
 </div>
